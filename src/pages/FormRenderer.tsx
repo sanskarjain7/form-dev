@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { IForm } from '../types/form.types';
+import { IForm, FormResponse } from '../types/form.types';
 import { loadForm } from '../services/formService';
+import { StorageService, StorageKeys } from '../services/storageService';
 import { QuestionInput } from '../components/form-renderer/QuestionInput';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { useFormResponseAutosave } from '../hooks/useFormResponseAutosave';
+import { simulateAPICall } from '../utils/apiSimulator';
 import toast from 'react-hot-toast';
 import { SubmissionSuccess } from '../components/form-renderer/SubmissionSuccess';
-
-interface FormResponse {
-  [questionId: string]: string;
-}
 
 export const FormRenderer = () => {
   const { formId } = useParams();
@@ -19,20 +17,9 @@ export const FormRenderer = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   
-  // Load initial responses from localStorage
-  const loadInitialResponses = (): FormResponse => {
-    try {
-      const savedResponses = localStorage.getItem(`formResponse_${formId}`);
-      if (savedResponses) {
-        return JSON.parse(savedResponses);
-      }
-    } catch (error) {
-      console.error('Failed to load saved responses:', error);
-    }
-    return {};
-  };
-
-  const [responses, setResponses] = useState<FormResponse>(loadInitialResponses());
+  const [responses, setResponses] = useState<FormResponse>(() => 
+    StorageService.getItem(`${StorageKeys.FORM_RESPONSE}${formId}`, {})
+  );
   
   useFormResponseAutosave(formId || '', responses);
 
@@ -64,31 +51,12 @@ export const FormRenderer = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const simulateSubmission = (): Promise<void> => {
-      return new Promise((resolve, reject) => {
-        const delay = Math.floor(Math.random() * 2000) + 1000; // 1-3 seconds
-        setTimeout(() => {
-          try {
-            // 10% chance of error
-            if (Math.random() < 0.1) {
-              throw new Error('Failed to submit form');
-            }
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        }, delay);
-      });
-    };
-
-    const submitPromise = simulateSubmission()
-      .then(() => {
-        setIsSubmitted(true);
-        localStorage.removeItem(`formResponse_${formId}`);
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    const submitPromise = simulateAPICall(() => {
+      StorageService.removeItem(`${StorageKeys.FORM_RESPONSE}${formId}`);
+      setIsSubmitted(true);
+    }).finally(() => {
+      setIsSubmitting(false);
+    });
 
     toast.promise(submitPromise, {
       loading: 'Submitting responses...',

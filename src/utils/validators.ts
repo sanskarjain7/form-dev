@@ -1,5 +1,3 @@
-// import { TextValidation, NumberValidation, ValidationRule } from '../types/form.types';
-
 import { RangeValue } from "../types/form.types";
 
 export const validateEmail = (value: string): boolean => {

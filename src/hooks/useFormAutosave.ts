@@ -1,35 +1,27 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { IForm } from '../types/form.types';
-import { formStorageService } from '../services/formStorageService';
-
-const AUTOSAVE_INTERVAL = 3000; // 3 seconds
+import { StorageService, StorageKeys } from '../services/storageService';
 
 export const useFormAutosave = (form: IForm) => {
   const timeoutRef = useRef<number | undefined>(undefined);
 
-  const saveProgress = useCallback(async () => {
-    try {
-      await formStorageService.saveFormProgress(form);
-    } catch (error) {
-      console.error('Autosave failed:', error);
-    }
+  const saveProgress = useCallback(() => {
+    StorageService.setItem(StorageKeys.FORM_PROGRESS, form);
   }, [form]);
 
-  // Save on interval
   useEffect(() => {
-    timeoutRef.current = window.setInterval(saveProgress, AUTOSAVE_INTERVAL);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(saveProgress, 1000);
 
     return () => {
       if (timeoutRef.current) {
-        clearInterval(timeoutRef.current);
+        clearTimeout(timeoutRef.current);
       }
     };
-  }, [form, saveProgress]);
-
-  // Save on form changes
-  useEffect(() => {
-    saveProgress();
-  }, [form.questions.length, saveProgress]); // Include saveProgress in dependencies
+  }, [saveProgress]);
 
   return { saveProgress };
 }; 

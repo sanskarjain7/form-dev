@@ -98,3 +98,8 @@ export interface QuestionToolsProps {
 export interface FormResponse {
   [questionId: string]: string;
 }
+
+export interface ValidationState {
+  isValid: boolean;
+  message: string;
+}
