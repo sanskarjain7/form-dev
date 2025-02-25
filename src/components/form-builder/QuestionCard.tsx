@@ -184,44 +184,38 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           />
         );
 
-      case NumberValidation.Range:
-        return (
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              value={rangeValue.min ?? ''}
-              onChange={(e) => handleValidationChange({ 
-                type: question.validation!.type,
-                value: { 
-                  ...rangeValue, 
-                  min: e.target.value ? Number(e.target.value) : null,
-                  max: rangeValue.max !== null ? Number(rangeValue.max) : null
-                } as RangeValue
-              })}
-              className="text-sm border-gray-300 rounded-md w-20"
-              placeholder="Min"
-            />
-            <span className="text-gray-500">to</span>
-            <input
-              type="number"
-              value={rangeValue.max ?? ''}
-              onChange={(e) => handleValidationChange({ 
-                type: question.validation!.type,
-                value: { 
-                  ...rangeValue, 
-                  max: e.target.value ? Number(e.target.value) : null,
-                  min: rangeValue.min !== null ? Number(rangeValue.min) : null
-                } as RangeValue
-              })}
-              className="text-sm border-gray-300 rounded-md w-20"
-              placeholder="Max"
-            />
-            {!isValid && (
-              <span className="text-xs text-red-500">{message}</span>
-            )}
-          </div>
-        );
-
+        case NumberValidation.Range:
+            return (
+              <div className="flex flex-wrap gap-2 items-center">
+                <input
+                  type="number"
+                  value={rangeValue.min ?? ''}
+                  onChange={(e) => handleValidationChange({
+                    type: question.validation!.type,
+                    value: {
+                      ...rangeValue,
+                      min: e.target.value ? Number(e.target.value) : null
+                    } as RangeValue
+                  })}
+                  className="w-20 px-2 py-1 border rounded-md text-sm"
+                  placeholder="Min"
+                />
+                <span className="text-gray-500">to</span>
+                <input
+                  type="number"
+                  value={rangeValue.max ?? ''}
+                  onChange={(e) => handleValidationChange({
+                    type: question.validation!.type,
+                    value: {
+                      ...rangeValue,
+                      max: e.target.value ? Number(e.target.value) : null
+                    } as RangeValue
+                  })}
+                  className="w-20 px-2 py-1 border rounded-md text-sm"
+                  placeholder="Max"
+                />
+              </div>
+            );
       default:
         return (
           <div className="flex flex-col gap-1">
