@@ -1,4 +1,4 @@
-import { IQuestion, QuestionType, NumberValidation, RangeValue } from '../../types/form.types';
+import { IQuestion, QuestionType, NumberValidation, RangeValue, TextValidation } from '../../types/form.types';
 
 interface QuestionInputProps {
   question: IQuestion;
@@ -21,12 +21,18 @@ export const QuestionInput: React.FC<QuestionInputProps> = ({
     case QuestionType.Text:
       return (
         <input
-          type="text"
+          type={question.validation?.type === TextValidation.Email ? 'email' : 'text'}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           required={question.required}
           className={inputClasses}
           placeholder="Your answer"
+          pattern={question.validation?.type === TextValidation.URL ? "https?://.+" : undefined}
+          title={
+            question.validation?.type === TextValidation.URL 
+              ? "Please enter a valid URL starting with http:// or https://"
+              : undefined
+          }
         />
       );
 
