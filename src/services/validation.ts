@@ -20,9 +20,6 @@ export const validateField = (value: string | number, validation: ValidationRule
     case TextValidation.MaxLength:
       return validators.validateMaxLength(value as string, Number(validation.value));
     
-    case NumberValidation.Years:
-      return validators.validateYears(Number(value));
-    
     case NumberValidation.GreaterThan:
       return validators.validateGreaterThan(Number(value), Number(validation.value));
     
@@ -55,8 +52,6 @@ export const getValidationMessage = (validation: ValidationRule): string => {
       return `Minimum length: ${validation.value} characters`;
     case TextValidation.MaxLength:
       return `Maximum length: ${validation.value} characters`;
-    case NumberValidation.Years:
-      return 'Please enter a valid age (0-150)';
     case NumberValidation.GreaterThan:
       return `Must be greater than ${validation.value}`;
     case NumberValidation.LessThan:

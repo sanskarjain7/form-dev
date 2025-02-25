@@ -143,7 +143,6 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             className="text-sm border-gray-300 rounded-md"
           >
             <option value={NumberValidation.None}>No Validation</option>
-            <option value={NumberValidation.Years}>Years</option>
             <option value={NumberValidation.GreaterThan}>Greater Than</option>
             <option value={NumberValidation.LessThan}>Less Than</option>
             <option value={NumberValidation.Range}>Range</option>

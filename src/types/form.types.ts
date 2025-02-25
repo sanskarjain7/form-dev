@@ -27,7 +27,6 @@ export enum TextValidation {
 
 export enum NumberValidation {
   None = 'none',
-  Years = 'years',
   GreaterThan = 'greaterThan',
   LessThan = 'lessThan',
   Range = 'range'

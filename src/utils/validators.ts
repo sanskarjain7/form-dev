@@ -28,10 +28,6 @@ export const validateMaxLength = (value: string, maxLength: number): boolean => 
   return value.length <= maxLength;
 };
 
-export const validateYears = (value: number): boolean => {
-  return value >= 0 && value <= 150;
-};
-
 export const validateGreaterThan = (value: number, threshold: number): boolean => {
   return value > threshold;
 };
