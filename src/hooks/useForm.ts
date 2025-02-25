@@ -60,6 +60,7 @@ export const useForm = () => {
         q.id === updatedQuestion.id ? updatedQuestion : q
       )
     }));
+    setActiveQuestionId(updatedQuestion.id);
   };
 
   const handleQuestionDelete = (questionId: string) => {
@@ -78,13 +79,7 @@ export const useForm = () => {
         setActiveQuestionId(errorQuestion.id);
         const element = document.getElementById(`question-${errorQuestion.id}`);
         element?.scrollIntoView({ behavior: 'smooth' });
-        toast.error(errors.join('\n'), {
-          duration: 4000,
-          style: {
-            maxWidth: '500px',
-            wordBreak: 'break-word'
-          }
-        });
+        toast.error(errors.join('\n'));
         return;
       }
     }

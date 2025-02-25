@@ -155,66 +155,94 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   };
 
   const renderValidationValue = () => {
-    if (!question.validation || question.validation.type === TextValidation.None) return null;
+    if (!question.validation) return null;
 
-    if (question.validation.type === NumberValidation.Range) {
-      const rangeValue = (question.validation.value as RangeValue) || { min: '', max: '' };
-      
-      return (
-        <div className="flex items-center gap-2">
+    const rangeValue = question.validation?.type === NumberValidation.Range
+      ? (question.validation.value as RangeValue) || { min: '', max: '' }
+      : { min: '', max: '' };
+
+    switch (question.validation.type) {
+      case TextValidation.MinLength:
+      case TextValidation.MaxLength:
+        return (
           <input
             type="number"
-            value={rangeValue.min ?? ''}
-            onChange={(e) => handleValidationChange({ 
-              type: question.validation!.type,
-              value: { 
-                ...rangeValue, 
-                min: e.target.value ? Number(e.target.value) : null 
-              }
-            })}
+            min="0"
+            value={question.validation.value as number || ''}
+            onChange={(e) => {
+              const value = parseInt(e.target.value) || 0;
+              onQuestionChange({
+                ...question,
+                validation: {
+                  type: question.validation!.type,
+                  value
+                }
+              });
+            }}
             className="text-sm border-gray-300 rounded-md w-20"
-            placeholder="Min"
+            placeholder="Length"
           />
-          <span className="text-gray-500">to</span>
-          <input
-            type="number"
-            value={rangeValue.max ?? ''}
-            onChange={(e) => handleValidationChange({ 
-              type: question.validation!.type,
-              value: { 
-                ...rangeValue, 
-                max: Number(e.target.value) 
-              }
-            })}
-            className="text-sm border-gray-300 rounded-md w-20"
-            placeholder="Max"
-          />
-          {!isValid && (
-            <span className="text-xs text-red-500">{message}</span>
-          )}
-        </div>
-      );
+        );
+
+      case NumberValidation.Range:
+        return (
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              value={rangeValue.min ?? ''}
+              onChange={(e) => handleValidationChange({ 
+                type: question.validation!.type,
+                value: { 
+                  ...rangeValue, 
+                  min: e.target.value ? Number(e.target.value) : null,
+                  max: rangeValue.max !== null ? Number(rangeValue.max) : null
+                } as RangeValue
+              })}
+              className="text-sm border-gray-300 rounded-md w-20"
+              placeholder="Min"
+            />
+            <span className="text-gray-500">to</span>
+            <input
+              type="number"
+              value={rangeValue.max ?? ''}
+              onChange={(e) => handleValidationChange({ 
+                type: question.validation!.type,
+                value: { 
+                  ...rangeValue, 
+                  max: e.target.value ? Number(e.target.value) : null,
+                  min: rangeValue.min !== null ? Number(rangeValue.min) : null
+                } as RangeValue
+              })}
+              className="text-sm border-gray-300 rounded-md w-20"
+              placeholder="Max"
+            />
+            {!isValid && (
+              <span className="text-xs text-red-500">{message}</span>
+            )}
+          </div>
+        );
+
+      default:
+        return (
+          <div className="flex flex-col gap-1">
+            <input
+              type={question.type === QuestionType.Number ? "number" : "text"}
+              value={question.validation.value as string}
+              onChange={(e) => handleValidationChange({ 
+                type: question.validation!.type,
+                value: question.type === QuestionType.Number ? 
+                  Number(e.target.value) : 
+                  e.target.value 
+              })}
+              className="text-sm border-gray-300 rounded-md w-24"
+              placeholder="Value..."
+            />
+            {!isValid && (
+              <span className="text-xs text-red-500">{message}</span>
+            )}
+          </div>
+        );
     }
-
-    return (
-      <div className="flex flex-col gap-1">
-        <input
-          type={question.type === QuestionType.Number ? "number" : "text"}
-          value={question.validation.value as string}
-          onChange={(e) => handleValidationChange({ 
-            type: question.validation!.type,
-            value: question.type === QuestionType.Number ? 
-              Number(e.target.value) : 
-              e.target.value 
-          })}
-          className="text-sm border-gray-300 rounded-md w-24"
-          placeholder="Value..."
-        />
-        {!isValid && (
-          <span className="text-xs text-red-500">{message}</span>
-        )}
-      </div>
-    );
   };
 
   return (
