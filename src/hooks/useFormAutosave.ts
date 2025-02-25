@@ -5,7 +5,7 @@ import { formStorageService } from '../services/formStorageService';
 const AUTOSAVE_INTERVAL = 3000; // 3 seconds
 
 export const useFormAutosave = (form: IForm) => {
-  const timeoutRef = useRef<number>();
+  const timeoutRef = useRef<number | undefined>(undefined);
 
   const saveProgress = useCallback(async () => {
     try {

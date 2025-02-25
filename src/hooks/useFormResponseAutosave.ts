@@ -4,7 +4,7 @@ import { FormResponse } from '../types/form.types';
 const AUTOSAVE_INTERVAL = 3000; // 3 seconds
 
 export const useFormResponseAutosave = (formId: string, responses: FormResponse) => {
-  const timeoutRef = useRef<number>();
+  const timeoutRef = useRef<number | undefined>(undefined);
 
   const saveResponses = useCallback(async () => {
     try {
