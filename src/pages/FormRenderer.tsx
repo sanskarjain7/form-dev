@@ -34,7 +34,6 @@ export const FormRenderer = () => {
 
   const [responses, setResponses] = useState<FormResponse>(loadInitialResponses());
   
-  // Use autosave hook
   useFormResponseAutosave(formId || '', responses);
 
   useEffect(() => {
