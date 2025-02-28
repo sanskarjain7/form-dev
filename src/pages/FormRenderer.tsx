@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { IForm, FormResponse } from '../types/form.types';
 import { loadForm } from '../services/formService';
 import { StorageService, StorageKeys } from '../services/storageService';
@@ -12,6 +12,7 @@ import { SubmissionSuccess } from '../components/form-renderer/SubmissionSuccess
 
 export const FormRenderer = () => {
   const { formId } = useParams();
+  const navigate = useNavigate();
   const [form, setForm] = useState<IForm | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -109,6 +110,13 @@ export const FormRenderer = () => {
               } text-white`}
           >
             {isSubmitting ? 'Submitting...' : 'Submit'}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(`/`)}
+            className="w-full px-4 py-3 rounded-lg font-medium transition-colors bg-gray-200 hover:bg-gray-300 text-gray-700"
+          >
+            Edit Form
           </button>
         </form>
       </div>

@@ -219,6 +219,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
       default:
         return (
           <div className="flex flex-col gap-1">
+            {question.validation.type !== TextValidation.None && (
             <input
               type={question.type === QuestionType.Number ? "number" : "text"}
               value={question.validation.value as string}
@@ -230,7 +231,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               })}
               className="text-sm border-gray-300 rounded-md w-24"
               placeholder="Value..."
-            />
+            />)}
             {!isValid && (
               <span className="text-xs text-red-500">{message}</span>
             )}
